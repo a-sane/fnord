@@ -5,12 +5,12 @@ import ScreenCaptureKit
 enum DictationState: Equatable {
     case idle, recording, transcribing, failed(String)
 
-    var symbol: String {
+    var icon: NSImage {
         switch self {
-        case .idle: "mic"
-        case .recording: "mic.fill"
-        case .transcribing: "waveform"
-        case .failed: "exclamationmark.triangle"
+        case .idle: MenuBarIcon.image(.wave)
+        case .recording: MenuBarIcon.image(.wave, filled: true)
+        case .transcribing: MenuBarIcon.image(.dots)
+        case .failed: MenuBarIcon.image(.bang)
         }
     }
 }

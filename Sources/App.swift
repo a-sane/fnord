@@ -10,7 +10,7 @@ struct FnordApp: App {
             Divider()
             Button("Quit Fnord") { NSApp.terminate(nil) }.keyboardShortcut("q")
         } label: {
-            Image(systemName: Dictation.shared.state.symbol)
+            Image(nsImage: Dictation.shared.state.icon)
         }
     }
 }
