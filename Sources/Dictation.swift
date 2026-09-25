@@ -58,7 +58,10 @@ final class Dictation {
     }
 
     private func begin() {
-        guard Keychain.apiKey != nil else { SettingsWindow.show(); return }
+        guard Keychain.apiKey != nil else {
+            SettingsWindow.show() // may open behind the active app; macOS won't let us steal focus from a key press
+            return fail("Add your Gemini API key in Fnord Settings")
+        }
         let format: [String: Any] = [
             AVFormatIDKey: kAudioFormatLinearPCM, AVSampleRateKey: 16_000,
             AVNumberOfChannelsKey: 1, AVLinearPCMBitDepthKey: 16,
