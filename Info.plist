@@ -6,6 +6,8 @@
     <string>com.sane.fnord</string>
     <key>CFBundleName</key>
     <string>Fnord</string>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
     <key>CFBundleExecutable</key>
     <string>Fnord</string>
     <key>CFBundlePackageType</key>

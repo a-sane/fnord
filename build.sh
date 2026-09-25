@@ -9,7 +9,9 @@ APP=build/Fnord.app
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS"
 cp .build/release/Fnord "$APP/Contents/MacOS/"
+mkdir -p "$APP/Contents/Resources"
 cp Info.plist "$APP/Contents/"
+cp AppIcon.icns "$APP/Contents/Resources/"
 
 IDENTITY=$(security find-identity -p codesigning -v | awk -F'"' '/Apple Development/ {print $2; exit}')
 codesign --force --sign "${IDENTITY:--}" "$APP"
