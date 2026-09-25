@@ -6,6 +6,8 @@ struct SettingsView: View {
     @AppStorage("triggerKey") private var triggerKey = TriggerKey.fn
     @AppStorage("vocabulary") private var vocabulary = ""
     @AppStorage("useContext") private var useContext = false
+    @AppStorage("microphone") private var microphone = "" // CoreAudio device UID; empty = system default
+    @State private var microphones = SettingsView.connectedMicrophones()
 
     var body: some View {
         Form {
@@ -14,6 +16,22 @@ struct SettingsView: View {
                     .onChange(of: apiKey) { Keychain.apiKey = $1.trimmingCharacters(in: .whitespacesAndNewlines) }
                 Link("Get a key in Google AI Studio", destination: URL(string: "https://aistudio.google.com/apikey")!)
                     .font(.caption)
+            }
+
+            Section("Microphone") {
+                Picker("Input", selection: $microphone) {
+                    Text("System default").tag("")
+                    ForEach(microphones, id: \.uniqueID) { Text($0.localizedName).tag($0.uniqueID) }
+                    if !microphone.isEmpty, !microphones.contains(where: { $0.uniqueID == microphone }) {
+                        Text("Disconnected — using system default").tag(microphone)
+                    }
+                }
+                .onReceive(NotificationCenter.default.publisher(for: AVCaptureDevice.wasConnectedNotification)) { _ in
+                    microphones = Self.connectedMicrophones()
+                }
+                .onReceive(NotificationCenter.default.publisher(for: AVCaptureDevice.wasDisconnectedNotification)) { _ in
+                    microphones = Self.connectedMicrophones()
+                }
             }
 
             Section("Hotkey") {
@@ -53,6 +71,10 @@ struct SettingsView: View {
         .formStyle(.grouped)
         .frame(width: 480)
         .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private static func connectedMicrophones() -> [AVCaptureDevice] {
+        AVCaptureDevice.DiscoverySession(deviceTypes: [.microphone, .external], mediaType: .audio, position: .unspecified).devices
     }
 
     private func caption(_ text: String) -> some View {

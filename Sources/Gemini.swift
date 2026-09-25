@@ -15,7 +15,7 @@ enum Gemini {
         """
 
     static func transcribe(wav: Data, screenshot: Data?, appName: String?) async throws -> String {
-        guard let key = Keychain.apiKey else { throw GeminiError("No API key") }
+        guard let key = Keychain.apiKey else { throw AppError("No API key") }
         let vocabulary = (UserDefaults.standard.string(forKey: "vocabulary") ?? "")
             .split(separator: "\n").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
         let audio = ["type": "audio", "mime_type": "audio/wav", "data": wav.base64EncodedString()]
@@ -47,7 +47,7 @@ enum Gemini {
         let json = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] ?? [:]
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
         guard status == 200 else {
-            throw GeminiError((json["error"] as? [String: Any])?["message"] as? String ?? "HTTP \(status)")
+            throw AppError((json["error"] as? [String: Any])?["message"] as? String ?? "HTTP \(status)")
         }
         let steps = json["steps"] as? [[String: Any]] ?? []
         return steps.filter { $0["type"] as? String == "model_output" }
@@ -58,7 +58,7 @@ enum Gemini {
     }
 }
 
-struct GeminiError: LocalizedError {
+struct AppError: LocalizedError {
     let errorDescription: String?
     init(_ message: String) { errorDescription = message }
 }

@@ -20,7 +20,7 @@ final class Dictation {
     static let shared = Dictation()
     private(set) var state = DictationState.idle
 
-    @ObservationIgnored private var recorder: AVAudioRecorder?
+    @ObservationIgnored private var recorder: Recorder?
     @ObservationIgnored private var pressedAt: Date? // non-nil while the trigger key is held down during recording
     @ObservationIgnored private var screenshot: Task<Data?, Never>?
     @ObservationIgnored private var appName: String?
@@ -62,14 +62,11 @@ final class Dictation {
             SettingsWindow.show() // may open behind the active app; macOS won't let us steal focus from a key press
             return fail("Add your Gemini API key in Fnord Settings")
         }
-        let format: [String: Any] = [
-            AVFormatIDKey: kAudioFormatLinearPCM, AVSampleRateKey: 16_000,
-            AVNumberOfChannelsKey: 1, AVLinearPCMBitDepthKey: 16,
-        ]
-        guard let r = try? AVAudioRecorder(url: audioURL, settings: format), r.record() else {
-            return fail("Microphone unavailable")
+        do {
+            recorder = try Recorder(deviceUID: UserDefaults.standard.string(forKey: "microphone"), url: audioURL)
+        } catch {
+            return fail(error.localizedDescription)
         }
-        recorder = r
         pressedAt = .now
         appName = NSWorkspace.shared.frontmostApplication?.localizedName
         screenshot = UserDefaults.standard.bool(forKey: "useContext") ? Task { await captureFrontWindow() } : nil
@@ -77,9 +74,9 @@ final class Dictation {
     }
 
     private func finish() {
-        guard let r = recorder else { return }
-        r.stop()
-        recorder = nil
+        guard let recorder else { return }
+        recorder.stop()
+        self.recorder = nil
         pressedAt = nil
         let shot = screenshot
         screenshot = nil

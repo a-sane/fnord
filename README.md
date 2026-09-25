@@ -8,6 +8,7 @@ Lives in the menu bar. No windows, no chat, just dictation.
 
 - **Hold or tap** — hold the trigger key to talk, release to insert. Tap once for hands-free, tap again to insert. Esc cancels.
 - **Trigger key** — fn/🌐, right ⌥, right ⌘ or right ⌃.
+- **Microphone** — system default or any connected input, including audio interfaces and virtual devices.
 - **Custom vocabulary** — names, jargon, product names; passed to the model as spelling hints.
 - **App context (optional)** — sends a screenshot of the active window so on-screen names and terms get spelled right.
 
