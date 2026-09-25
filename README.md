@@ -38,3 +38,7 @@ Requires macOS 14+ and Xcode (Swift 6).
 4. Turning on app context also needs **Screen Recording**.
 
 Text is inserted by putting it on the clipboard, sending ⌘V, and restoring your previous clipboard.
+
+## License
+
+MIT
