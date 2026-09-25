@@ -1,0 +1,40 @@
+# fnord
+
+Push-to-talk dictation for macOS, powered by Gemini. Hold a key, talk, release — the text lands in whatever app you're typing in.
+
+Lives in the menu bar. No windows, no chat, just dictation.
+
+## Features
+
+- **Hold or tap** — hold the trigger key to talk, release to insert. Tap once for hands-free, tap again to insert. Esc cancels.
+- **Trigger key** — fn/🌐, right ⌥, right ⌘ or right ⌃.
+- **Custom vocabulary** — names, jargon, product names; passed to the model as spelling hints.
+- **App context (optional)** — sends a screenshot of the active window so on-screen names and terms get spelled right.
+
+## Models
+
+| Mode | Model | Why |
+|---|---|---|
+| Default | `gemini-3.5-transcribe` | Dedicated speech-to-text with native custom vocabulary and smart formatting |
+| App context on | `gemini-3.8-flash` | The transcribe model is audio-only; screenshots need a multimodal model |
+
+Requests go straight from your Mac to the Gemini API with `store: false`. Your API key is kept in the macOS Keychain.
+
+## Build
+
+Requires macOS 14+ and Xcode (Swift 6).
+
+```sh
+./build.sh && open build/Fnord.app
+```
+
+`build.sh` signs with your Apple Development certificate if you have one, so macOS permissions survive rebuilds; otherwise it signs ad-hoc.
+
+## Setup
+
+1. Paste a Gemini API key ([get one here](https://aistudio.google.com/apikey)) into the settings window that opens on first launch.
+2. Grant **Microphone** and **Accessibility** (for the hotkey and inserting text), then relaunch.
+3. Using fn? Set System Settings › Keyboard › “Press 🌐 key to” → **Do Nothing**, or taps will open the emoji picker.
+4. Turning on app context also needs **Screen Recording**.
+
+Text is inserted by putting it on the clipboard, sending ⌘V, and restoring your previous clipboard.
